@@ -1,0 +1,8 @@
+pandas>=2.2
+streamlit>=1.40
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydub>=0.25
+soundfile>=0.12
+scipy>=1.13
+python-multipart>=0.0.9

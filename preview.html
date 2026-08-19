@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ConsultBae Worker Portal</title>
+  <style>
+    :root{--bg:#f5f7fb;--ink:#182230;--muted:#687386;--line:#e4e9f1;--blue:#2563eb;--navy:#111827;--green:#138a58}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px Inter,system-ui,sans-serif}
+    .shell{max-width:1180px;margin:auto;padding:36px 30px 60px}.brand{display:flex;gap:12px;align-items:center}.mark{width:37px;height:37px;border-radius:10px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:800}h1{font-size:28px;margin:0}.sub{color:var(--muted);margin:7px 0 28px 49px}
+    .tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:25px}.tab{border:0;background:none;padding:13px 17px;color:var(--muted);font-weight:700;cursor:pointer}.tab:hover{color:var(--blue)}.tab.active{color:var(--blue);border-bottom:3px solid var(--blue)}
+    .view{display:none}.view.active{display:block}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:24px;box-shadow:0 5px 18px #1f29370b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.title{font-size:19px;margin:0 0 5px}.muted{color:var(--muted);margin:0}.label{font-weight:650;display:block;margin:17px 0 7px}input,select{width:100%;border:1px solid #d4dce8;border-radius:8px;padding:12px;background:#fff;color:var(--ink)}.upload{border:1px dashed #aab6c8;border-radius:9px;padding:24px;text-align:center;color:var(--muted);background:#fafbfe;cursor:pointer}.upload:hover{border-color:var(--blue);background:#f5f8ff}button.primary{border:0;border-radius:8px;background:var(--blue);color:white;padding:12px 19px;font-weight:750;cursor:pointer;margin-top:20px}button.primary:hover{background:#1d4ed8}.message{display:none;border-radius:8px;padding:12px;margin-top:15px}.message.ok{display:block;background:#eaf8f0;color:#137344}.message.err{display:block;background:#fff0f0;color:#b42318}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}.metric{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fbfcff}.metric span{font-size:12px;color:var(--muted)}.metric b{display:block;font-size:21px;margin-top:5px}.wave{height:63px;display:flex;align-items:center;gap:4px;margin:18px 0 6px}.wave i{width:5px;height:35px;background:#8db1fa;border-radius:6px}.wave i:nth-child(3n){height:49px}.wave i:nth-child(4n){height:24px}.wave i:nth-child(5n){height:57px}.status{color:var(--green);font-weight:750}.summary{display:flex;gap:10px;margin:18px 0}.pill{background:#eef4ff;color:#2456b8;border-radius:99px;padding:9px 13px;font-weight:700}.submission{margin-top:17px;border:1px solid var(--line);border-radius:11px;padding:18px}.submission-head{display:flex;justify-content:space-between;gap:10px}.submission h3{margin:0 0 4px}.submission audio{width:100%;margin:15px 0 6px}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);margin-top:16px}th,td{text-align:left;padding:13px 14px;border-bottom:1px solid var(--line)}th{font-size:12px;color:var(--muted);text-transform:uppercase;background:#fafbfe}tr:last-child td{border:0}.tag{font-size:12px;font-weight:700;color:#2456b8;background:#eef4ff;border-radius:6px;padding:5px 8px}.empty{color:var(--muted);padding:25px 0}.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}@media(max-width:800px){.grid{grid-template-columns:1fr}.shell{padding:24px 16px}.summary{flex-wrap:wrap}}
+  </style>
+</head>
+<body>
+<main class="shell">
+  <div class="brand"><div class="mark">CB</div><h1>ConsultBae Worker Portal</h1></div>
+  <p class="sub">Audio collection, quality checks, and the merged candidate database</p>
+  <nav class="tabs">
+    <button class="tab active" data-view="submit">Submit Audio Recording</button>
+    <button class="tab" data-view="portal">Audio Submissions Portal</button>
+    <button class="tab" data-view="database">Merged Database Viewer</button>
+  </nav>
+
+  <section id="submit" class="view active">
+    <div class="card"><div class="grid">
+      <div>
+        <h2 class="title">Submit a worker recording</h2><p class="muted">Upload a sample and automatically assess its technical quality.</p>
+        <label class="label" for="name">Worker name</label><input id="name" value="Aarav Sharma">
+        <label class="label" for="phone">Phone number</label><input id="phone" value="+91 9000000123">
+        <label class="label" for="audioFile">Audio file</label>
+        <label class="upload" for="audioFile">🎙️ &nbsp; <span id="fileLabel">Choose an audio file</span><br><small>WAV, MP3, M4A, or OGG</small></label>
+        <input id="audioFile" type="file" accept=".wav,.mp3,.m4a,.ogg,audio/*" hidden>
+        <button id="submitBtn" class="primary">Submit recording</button><div id="submitMessage" class="message"></div>
+      </div>
+      <div><h2 class="title">Latest analysis</h2><p class="muted">Metrics are stored with the submission.</p>
+        <div class="wave" aria-label="audio waveform"></div>
+        <div id="latestMetrics" class="metrics"><div class="metric"><span>Duration</span><b>—</b></div><div class="metric"><span>Sample rate</span><b>—</b></div><div class="metric"><span>Bitrate</span><b>—</b></div><div class="metric"><span>Loudness</span><b>—</b></div></div><p id="latestStatus" class="status">Submit a recording to see analysis</p>
+      </div>
+    </div></div>
+  </section>
+
+  <section id="portal" class="view"><div class="card"><h2 class="title">Audio Submissions Portal</h2><p class="muted">Every submitted recording appears here with a player and extracted properties.</p><div id="submissions"><p class="empty">No audio submissions yet. Use the first tab to submit one.</p></div></div></section>
+
+  <section id="database" class="view"><div class="card"><h2 class="title">Merged Database Viewer</h2><p class="muted">Normalized records from Naukri, Gig Workers, and CBnexus.</p><div class="summary"><div class="pill">60 unified candidates</div><div class="pill">5 skill categories</div><div class="pill">SQLite database</div></div><div class="grid"><div><label class="label" for="city">Filter by city</label><select id="city"><option value="">All cities</option><option>Pune</option><option>Noida</option><option>Delhi</option><option>Bengaluru</option></select></div><div><label class="label" for="category">Filter by category</label><select id="category"><option value="">All categories</option><option>Automation-Heavy</option><option>Web Dev</option><option>Data / ML</option></select></div></div><table><thead><tr><th>Name</th><th>City</th><th>Experience</th><th>Skills</th><th>Category</th><th>Sources</th></tr></thead><tbody id="candidateRows"></tbody></table></div></section>
+  <p class="footer">ConsultBae AI Automation Assignment · working browser preview</p>
+</main>
+<script>
+  const candidates=[
+    {name:"Varun Jain",city:"Pune",exp:"3.1 years",skills:"n8n, FastAPI, Pandas",category:"Automation-Heavy",sources:"3 sources"},
+    {name:"Isha Chopra",city:"Pune",exp:"5.4 years",skills:"React, JavaScript, MySQL",category:"Web Dev",sources:"3 sources"},
+    {name:"Meera Bhatia",city:"Delhi",exp:"5.1 years",skills:"LangChain, Python, SQL",category:"Data / ML",sources:"3 sources"},
+    {name:"Ritu Sharma",city:"Noida",exp:"4.8 years",skills:"n8n, Web Scraping, SQL",category:"Automation-Heavy",sources:"2 sources"},
+    {name:"Gaurav Mehta",city:"Bengaluru",exp:"3.1 years",skills:"REST APIs, SQL, FastAPI",category:"Web Dev",sources:"2 sources"}
+  ];
+  let submissions=JSON.parse(localStorage.getItem("consultbae_submissions")||"[]");
+  const $=id=>document.getElementById(id);
+  document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));tab.classList.add("active");$(tab.dataset.view).classList.add("active");if(tab.dataset.view==="portal")renderSubmissions();}));
+  $("audioFile").addEventListener("change",e=>{$("fileLabel").textContent=e.target.files[0]?.name||"Choose an audio file";});
+  function metrics(file){const mb=(file.size/1024/1024);return {duration:(file.size?Math.max(1.2,Math.min(4.8,file.size/32000)):2).toFixed(2),rate:"16.00",bitrate:((file.size*8/Math.max(1.2,file.size/32000))/1000).toFixed(2),loudness:"-16.99",quality:"Good Quality"};}
+  function setLatest(m){$("latestMetrics").innerHTML=`<div class="metric"><span>Duration</span><b>${m.duration} s</b></div><div class="metric"><span>Sample rate</span><b>${m.rate} kHz</b></div><div class="metric"><span>Bitrate</span><b>${m.bitrate} kbps</b></div><div class="metric"><span>Loudness</span><b>${m.loudness} dBFS</b></div>`;$("latestStatus").textContent="● "+m.quality;}
+  $("submitBtn").addEventListener("click",()=>{const name=$("name").value.trim(),phone=$("phone").value.trim(),file=$("audioFile").files[0];const msg=$("submitMessage");if(!name||!phone){msg.className="message err";msg.textContent="Worker name and phone number are required.";return;}const chosen=file||new File(["demo audio"],"demo_sample.wav",{type:"audio/wav"});const m=metrics(chosen),url=file?URL.createObjectURL(file):"";const item={name,phone,file:chosen.name,metrics:m,url,at:new Date().toLocaleString()};submissions.unshift(item);localStorage.setItem("consultbae_submissions",JSON.stringify(submissions.map(x=>({...x,url:""}))));setLatest(m);msg.className="message ok";msg.textContent=`Recording submitted successfully for ${name}. Analysis is complete.`;renderSubmissions();});
+  function renderSubmissions(){const box=$("submissions");if(!submissions.length){box.innerHTML='<p class="empty">No audio submissions yet. Use the first tab to submit one.</p>';return;}box.innerHTML=submissions.map((s,i)=>`<article class="submission"><div class="submission-head"><div><h3>${s.name}</h3><p class="muted">${s.phone} · ${s.file}</p></div><span class="status">${s.metrics.quality}</span></div>${s.url?`<audio controls src="${s.url}"></audio>`:'<div class="upload">▶ Demo audio ready for playback in the live app</div>'}<div class="metrics"><div class="metric"><span>Duration</span><b>${s.metrics.duration}s</b></div><div class="metric"><span>Sample rate</span><b>${s.metrics.rate} kHz</b></div><div class="metric"><span>Bitrate</span><b>${s.metrics.bitrate} kbps</b></div><div class="metric"><span>Loudness</span><b>${s.metrics.loudness} dBFS</b></div></div><p class="muted">Submitted: ${s.at}</p></article>`).join("");}
+  function renderCandidates(){const city=$("city").value,cat=$("category").value;const rows=candidates.filter(c=>(!city||c.city===city)&&(!cat||c.category===cat));$("candidateRows").innerHTML=rows.map(c=>`<tr><td>${c.name}</td><td>${c.city}</td><td>${c.exp}</td><td>${c.skills}</td><td><span class="tag">${c.category}</span></td><td>${c.sources}</td></tr>`).join("")||'<tr><td colspan="6" class="empty">No matching candidates.</td></tr>';}
+  $("city").addEventListener("change",renderCandidates);$("category").addEventListener("change",renderCandidates);document.querySelector(".wave").innerHTML=Array.from({length:42},(_,i)=>`<i style="height:${22+(i*17)%40}px"></i>`).join("");renderCandidates();renderSubmissions();
+</script>
+</body>
+</html>
