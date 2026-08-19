@@ -1,0 +1,36 @@
+{
+  "name": "ConsultBae - Skill Tagger",
+  "nodes": [
+    {
+      "parameters": {"httpMethod": "POST", "path": "consultbae-skill-tagger", "responseMode": "onReceived"},
+      "id": "webhook", "name": "Start", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0]
+    },
+    {
+      "parameters": {"url": "={{$env.CONSULTBAE_API_URL || 'http://localhost:8000'}}/api/candidates/unclassified", "options": {}},
+      "id": "get-candidates", "name": "Get Unclassified Candidates", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4, "position": [220, 0]
+    },
+    {
+      "parameters": {"fieldToSplitOut": "candidates", "options": {}},
+      "id": "split", "name": "One Candidate at a Time", "type": "n8n-nodes-base.splitOut", "typeVersion": 1, "position": [440, 0]
+    },
+    {
+      "parameters": {"resource": "text", "operation": "message", "modelId": "gpt-4o-mini", "messages": {"values": [{"content": "Classify these skills into exactly one of Automation-Heavy, Web Dev, Data / ML, Generalist. Return JSON only: {\"category\":\"...\"}. Skills: {{$json.skills}}"}]}, "options": {}},
+      "id": "llm", "name": "LLM Skill Classifier", "type": "@n8n/n8n-nodes-langchain.openAi", "typeVersion": 1.8, "position": [660, 0]
+    },
+    {
+      "parameters": {"method": "POST", "url": "={{$env.CONSULTBAE_API_URL || 'http://localhost:8000'}}/api/webhook/classify-skill", "sendBody": true, "specifyBody": "json", "jsonBody": "={{ { candidate_id: $json.id, category: $json.output?.category || $json.category } }}", "options": {}},
+      "id": "update", "name": "Write Category to SQLite", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4, "position": [900, 0]
+    }
+  ],
+  "connections": {
+    "Start": {"main": [[{"node": "Get Unclassified Candidates", "type": "main", "index": 0}]]},
+    "Get Unclassified Candidates": {"main": [[{"node": "One Candidate at a Time", "type": "main", "index": 0}]]},
+    "One Candidate at a Time": {"main": [[{"node": "LLM Skill Classifier", "type": "main", "index": 0}]]},
+    "LLM Skill Classifier": {"main": [[{"node": "Write Category to SQLite", "type": "main", "index": 0}]]}
+  },
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "versionId": "consultbae-skill-tagger-v1",
+  "meta": {"templateCredsSetupCompleted": false},
+  "tags": []
+}
